@@ -18,6 +18,14 @@ name="l1-task3"
 path = "l1/task3.rs"
 
 [[example]]
+name="l1-task17"
+path = "l1/task17.rs"
+
+[[example]]
+name="l1-task18"
+path = "l1/task18.rs"
+
+[[example]]
 name="l1-task19"
 path = "l1/task19.rs"
 
