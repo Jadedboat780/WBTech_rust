@@ -27,6 +27,10 @@ name="l1-task10"
 path = "src/task10.rs"
 
 [[example]]
+name="l1-task11"
+path = "src/task11.rs"
+
+[[example]]
 name="l1-task12"
 path = "src/task12.rs"
 
