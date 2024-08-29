@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+num = "0.4.3"
 
 [[example]]
 name="l1-task1"
@@ -40,6 +41,14 @@ path = "src/task18.rs"
 [[example]]
 name="l1-task19"
 path = "src/task19.rs"
+
+[[example]]
+name="l1-task20"
+path = "src/task20.rs"
+
+[[example]]
+name="l1-task21"
+path = "src/task21.rs"
 
 [[example]]
 name="l1-task22"
