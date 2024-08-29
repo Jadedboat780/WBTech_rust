@@ -1,0 +1,50 @@
+[package]
+name = "l1"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[[example]]
+name="l1-task1"
+path = "src/task1.rs"
+
+[[example]]
+name="l1-task2"
+path = "src/task2.rs"
+
+[[example]]
+name="l1-task3"
+path = "src/task3.rs"
+
+[[example]]
+name="l1-task9"
+path = "src/task9.rs"
+
+[[example]]
+name="l1-task15"
+path = "src/task15.rs"
+
+[[example]]
+name="l1-task17"
+path = "src/task17.rs"
+
+[[example]]
+name="l1-task18"
+path = "src/task18.rs"
+
+[[example]]
+name="l1-task19"
+path = "src/task19.rs"
+
+[[example]]
+name="l1-task22"
+path = "src/task22.rs"
+
+[[example]]
+name="l1-task23"
+path = "src/task23.rs"
+
+[[example]]
+name="l1-task24"
+path = "src/task24.rs"
