@@ -5,6 +5,10 @@ edition = "2021"
 
 [dependencies]
 num = "0.4.3"
+dashmap = "6.0.1"
+tokio = { version = "1.40", features = ["full"] }
+flume = "0.11.0"
+tokio-util = "0.7.11"
 
 [[example]]
 name="l1-task1"
@@ -17,6 +21,26 @@ path = "src/task2.rs"
 [[example]]
 name="l1-task3"
 path = "src/task3.rs"
+
+[[example]]
+name="l1-task4"
+path = "src/task4.rs"
+
+[[example]]
+name="l1-task5"
+path = "src/task5.rs"
+
+[[example]]
+name="l1-task6"
+path = "src/task6.rs"
+
+[[example]]
+name="l1-task7"
+path = "src/task7.rs"
+
+[[example]]
+name="l1-task8"
+path = "src/task8.rs"
 
 [[example]]
 name="l1-task9"
