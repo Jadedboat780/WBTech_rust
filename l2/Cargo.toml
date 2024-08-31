@@ -1,0 +1,26 @@
+[package]
+name = "l2"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[[example]]
+name="l2-task12"
+path = "src/task12.rs"
+
+[[example]]
+name="l2-task13"
+path = "src/task13.rs"
+
+[[example]]
+name="l2-task14"
+path = "src/task14.rs"
+
+[[example]]
+name="l2-task15"
+path = "src/task15.rs"
+
+[[example]]
+name="l2-task16"
+path = "src/task16.rs"
