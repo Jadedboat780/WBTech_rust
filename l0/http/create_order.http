@@ -1,0 +1,66 @@
+POST http://127.0.0.1:3000/orders
+Content-Type: application/json
+
+{
+    "track_number": "WWWWWW",
+    "entry": "web",
+    "delivery": {
+        "name": "John Doe",
+        "phone": "555-1234",
+        "zip": "12345",
+        "city": "Test City",
+        "address": "123 Test St",
+        "region": "Test Region",
+        "email": "john.doe@example.com"
+    },
+    "payment": {
+        "transaction": "txn_12345",
+        "request_id": "req_12345",
+        "currency": "USD",
+        "provider": "TestProvider",
+        "amount": 1000,
+        "payment_dt": 1634235600,
+        "bank": "Test Bank",
+        "delivery_cost": 50,
+        "goods_total": 950,
+        "custom_fee": 0
+    },
+    "items": [
+        {
+            "id": 1,
+            "chrt_id": 1234567,
+            "track_number": "12345",
+            "price": 500,
+            "rid": "rid_12345",
+            "name": "Test Item 1",
+            "sale": 10,
+            "size": "L",
+            "total_price": 450,
+            "nm_id": 111111,
+            "brand": "TestBrand",
+            "status": 1
+        },
+        {
+            "id": 2,
+            "chrt_id": 654321,
+            "track_number": "12345",
+            "price": 500,
+            "rid": "rid_54321",
+            "name": "Test Item 2",
+            "sale": 0,
+            "size": "M",
+            "total_price": 500,
+            "nm_id": 222222,
+            "brand": "AnotherBrand",
+            "status": 1
+        }
+    ],
+    "locale": "en",
+    "internal_signature": "signature_12345",
+    "customer_id": "customer_12345",
+    "delivery_service": "TestService",
+    "shardkey": "key_12345",
+    "sm_id": 1,
+    "date_created": "2024-09-09T12:34:56",
+    "oof_shard": "shard_12345"
+}
