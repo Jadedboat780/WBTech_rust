@@ -1,0 +1,29 @@
+[package]
+name = "l0"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = { version = "0.7", features = ["macros"] }
+tower-http = { version = "0.5", features = ["cors"] }
+tokio = { version = "1", features = ["full"] }
+
+tokio-postgres = { version = "0.7.11", features = ["with-serde_json-1", "with-uuid-1", "array-impls", "with-chrono-0_4"] }
+postgres-derive = "0.4.5"
+postgres-types = "0.2.7"
+
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.114"
+
+uuid = { version = "1.10.0", features = ["v4", "fast-rng", "macro-diagnostics", "serde"] }
+dotenv = "0.15"
+env_logger = "0.11.5"
+log = "0.4.22"
+chrono = { version = "0.4.38", features = ["serde"] }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+debug = false
+strip = true
+panic = "abort"
