@@ -28,7 +28,10 @@ pub async fn get_order(
     Path(track_number): Path<String>,
     State(state): State<Arc<AppState>>,
 ) -> ApiResult<Json<GetOrder>> {
-    log::info!("Запрос на получение заказа с трек-номером: {}", track_number);
+    log::info!(
+        "Запрос на получение заказа с трек-номером: {}",
+        track_number
+    );
 
     if let Some(cached_order) = state.cache.get(&track_number) {
         return Ok(Json(cached_order.value().clone()));
@@ -50,7 +53,10 @@ pub async fn create_order(
     State(state): State<Arc<AppState>>,
     Json(order): Json<CreateOrder>,
 ) -> ApiResult<StatusCode> {
-    log::info!("Создание нового заказа с трек-номером: {}", order.track_number);
+    log::info!(
+        "Создание нового заказа с трек-номером: {}",
+        order.track_number
+    );
     insert_order(order, state.client.client())
         .await
         .map_err(|err| {

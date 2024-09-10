@@ -69,16 +69,19 @@ async fn insert_delivery(delivery: CreateDelivery, client: &Client) -> PgResult<
     RETURNING id;
     ";
 
-    let delivery_id = client.query_one(
-        query,
-        &[&delivery.name,
-            &delivery.phone,
-            &delivery.zip,
-            &delivery.city,
-            &delivery.address,
-            &delivery.region,
-            &delivery.email],
-    )
+    let delivery_id = client
+        .query_one(
+            query,
+            &[
+                &delivery.name,
+                &delivery.phone,
+                &delivery.zip,
+                &delivery.city,
+                &delivery.address,
+                &delivery.region,
+                &delivery.email,
+            ],
+        )
         .await?
         .get(0);
 
@@ -93,21 +96,22 @@ async fn insert_payment(payment: CreatePayment, client: &Client) -> PgResult<i32
     RETURNING id;
     ";
 
-    let payment_id = client.query_one(
-        query,
-        &[
-            &payment.transaction,
-            &payment.request_id,
-            &payment.currency,
-            &payment.provider,
-            &payment.amount,
-            &payment.payment_dt,
-            &payment.bank,
-            &payment.delivery_cost,
-            &payment.goods_total,
-            &payment.custom_fee
-        ],
-    )
+    let payment_id = client
+        .query_one(
+            query,
+            &[
+                &payment.transaction,
+                &payment.request_id,
+                &payment.currency,
+                &payment.provider,
+                &payment.amount,
+                &payment.payment_dt,
+                &payment.bank,
+                &payment.delivery_cost,
+                &payment.goods_total,
+                &payment.custom_fee,
+            ],
+        )
         .await?
         .get(0);
 
@@ -122,22 +126,24 @@ async fn insert_item(item: CreateItem, client: &Client) -> PgResult<()> {
     RETURNING chrt_id;
     ";
 
-    let _ = client.query_one(
-        query,
-        &[
-            &item.chrt_id,
-            &item.track_number,
-            &item.price,
-            &item.rid,
-            &item.name,
-            &item.sale,
-            &item.size,
-            &item.total_price,
-            &item.nm_id,
-            &item.brand,
-            &item.status
-        ],
-    ).await?;
+    let _ = client
+        .query_one(
+            query,
+            &[
+                &item.chrt_id,
+                &item.track_number,
+                &item.price,
+                &item.rid,
+                &item.name,
+                &item.sale,
+                &item.size,
+                &item.total_price,
+                &item.nm_id,
+                &item.brand,
+                &item.status,
+            ],
+        )
+        .await?;
 
     Ok(())
 }
@@ -159,23 +165,24 @@ pub async fn insert_order(order: CreateOrder, client: &Client) -> PgResult<()> {
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);
     ";
 
-    client.execute(
-        query,
-        &[
-            &order.track_number,
-            &order.entry,
-            &delivery_id,
-            &payment_id,
-            &order.locale,
-            &order.internal_signature,
-            &order.customer_id,
-            &order.delivery_service,
-            &order.shardkey,
-            &order.sm_id,
-            &order.date_created,
-            &order.oof_shard,
-        ],
-    )
+    client
+        .execute(
+            query,
+            &[
+                &order.track_number,
+                &order.entry,
+                &delivery_id,
+                &payment_id,
+                &order.locale,
+                &order.internal_signature,
+                &order.customer_id,
+                &order.delivery_service,
+                &order.shardkey,
+                &order.sm_id,
+                &order.date_created,
+                &order.oof_shard,
+            ],
+        )
         .await?;
 
     Ok(())

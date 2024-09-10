@@ -3,9 +3,13 @@ use tokio::net::TcpListener;
 use tokio_postgres::{Client, NoTls};
 use tower_http::cors::{Any, CorsLayer};
 
-use std::sync::Arc;
 use dashmap::DashMap;
-use l0::{cache_cleanup_task, endpoints::{create_order, get_order, handler_404, hello_word}, AppState};
+use l0::{
+    cache_cleanup_task,
+    endpoints::{create_order, get_order, handler_404, hello_word},
+    AppState,
+};
+use std::sync::Arc;
 
 /// Инициализация подключения к базе данных
 async fn init_db_connect() -> Client {
