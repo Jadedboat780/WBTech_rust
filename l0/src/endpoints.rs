@@ -6,7 +6,6 @@ use axum::{
 use tokio_postgres::GenericClient;
 
 use std::sync::Arc;
-// use
 use crate::api_response::{ApiError, ApiResult};
 use crate::models::{CreateOrder, GetOrder};
 use crate::queries::{insert_order, select_order_by_id};
