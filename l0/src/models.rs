@@ -1,14 +1,16 @@
+use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use chrono::NaiveDateTime;
+use tokio_postgres::Row;
 
+/// Модель для получения данных о заказе
 #[derive(Serialize, Debug)]
 pub struct GetOrder {
     order_uid: uuid::Uuid,
     track_number: String,
     entry: String,
     delivery: Value,
-    payment:Value,
+    payment: Value,
     items: Value,
     locale: String,
     internal_signature: String,
@@ -20,13 +22,14 @@ pub struct GetOrder {
     oof_shard: String,
 }
 
+/// Модель для создания заказа
 #[derive(Deserialize, Debug)]
 pub struct CreateOrder {
     pub track_number: String,
     pub entry: String,
-    pub delivery: Value,
-    pub payment:Value,
-    pub items: Value,
+    pub delivery: CreateDelivery,
+    pub payment: CreatePayment,
+    pub items: Vec<CreateItem>,
     pub locale: String,
     pub internal_signature: String,
     pub customer_id: String,
@@ -37,8 +40,51 @@ pub struct CreateOrder {
     pub oof_shard: String,
 }
 
-impl From<tokio_postgres::Row> for GetOrder {
-    fn from(row: tokio_postgres::Row) -> Self {
+/// Модель для создания информации о доставки
+#[derive(Deserialize, Debug)]
+pub struct CreateDelivery {
+    pub name: String,
+    pub phone: String,
+    pub zip: String,
+    pub city: String,
+    pub address: String,
+    pub region: String,
+    pub email: String,
+}
+
+/// Модель для создания информации о платеже
+#[derive(Deserialize, Debug)]
+pub struct CreatePayment {
+    pub transaction: String,
+    pub request_id: String,
+    pub currency: String,
+    pub provider: String,
+    pub amount: i32,
+    pub payment_dt: i32,
+    pub bank: String,
+    pub delivery_cost: i32,
+    pub goods_total: i32,
+    pub custom_fee: i32,
+}
+
+/// Модель для создания информации о товаре
+#[derive(Deserialize, Debug)]
+pub struct CreateItem {
+    pub chrt_id: i32,
+    pub track_number: String,
+    pub price: i32,
+    pub rid: String,
+    pub name: String,
+    pub sale: i32,
+    pub size: String,
+    pub total_price: i32,
+    pub nm_id: i32,
+    pub brand: String,
+    pub status: i32,
+}
+
+impl From<Row> for GetOrder {
+    fn from(row: Row) -> Self {
         GetOrder {
             order_uid: row.get("order_uid"),
             track_number: row.get("track_number"),
@@ -58,17 +104,20 @@ impl From<tokio_postgres::Row> for GetOrder {
     }
 }
 
-// #[derive(Serialize, Deserialize, Debug)]
-// pub struct Delivery {
-//     id: u32,
-//     name: String,
-//     phone: String,
-//     zip: String,
-//     city: String,
-//     address: String,
-//     region: String,
-//     email: String,
+// impl From<Row> for GetDelivery {
+//     fn from(row: Row) -> Self {
+//         GetDelivery {
+//             name: row.get("name"),
+//             phone: row.get("phone"),
+//             zip: row.get("zip"),
+//             city: row.get("city"),
+//             address: row.get("address"),
+//             region: row.get("region"),
+//             email: row.get("email"),
+//         }
+//     }
 // }
+
 //
 // #[derive(Serialize, Deserialize, Debug, FromSql)]
 // pub struct Payment {
@@ -101,21 +150,6 @@ impl From<tokio_postgres::Row> for GetOrder {
 //     status: u32,
 // }
 
-// impl From<tokio_postgres::Row> for Delivery {
-//     fn from(row: tokio_postgres::Row) -> Self {
-//         Delivery {
-//             id: row.get("id"),
-//             name: row.get("name"),
-//             phone: row.get("phone"),
-//             zip: row.get("zip"),
-//             city: row.get("city"),
-//             address: row.get("address"),
-//             region: row.get("region"),
-//             email: row.get("email"),
-//         }
-//     }
-// }
-//
 // impl From<&tokio_postgres::Row> for Payment {
 //     fn from(row: &tokio_postgres::Row) -> Self {
 //         Payment {

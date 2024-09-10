@@ -1,7 +1,7 @@
 use axum::{
     extract::{Path, State},
     http::StatusCode,
-    Json
+    Json,
 };
 use tokio_postgres::GenericClient;
 

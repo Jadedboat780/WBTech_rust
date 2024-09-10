@@ -1,24 +1,24 @@
 use axum::{routing, Router};
-use tower_http::cors::{Any, CorsLayer};
 use tokio::net::TcpListener;
 use tokio_postgres::{Client, NoTls};
+use tower_http::cors::{Any, CorsLayer};
 
 use std::sync::Arc;
 
 use l0::{
-    endpoints::{hello_word, handler_404, get_order, create_order},
-    AppState
+    endpoints::{create_order, get_order, handler_404, hello_word},
+    AppState,
 };
-
 
 /// Инициализация подключения к базе данных
 async fn init_db_connect() -> Client {
-    let db_url = std::env::var("DATABASE_URL").expect("Error getting connection");
+    let db_url = std::env::var("DATABASE_URL").expect("Ошибка при получении соединения");
     let (client, connection) = tokio_postgres::connect(&db_url, NoTls).await.unwrap();
 
     tokio::spawn(async move {
         if let Err(error) = connection.await {
-            eprintln!("Connection error: {}", error);
+            log::error!("Ошибка подключения: {}", error);
+            std::process::abort()
         }
     });
 
@@ -41,7 +41,7 @@ async fn init_router() -> Router {
 
     Router::new()
         .route("/", routing::get(hello_word))
-        .route("/orders/:id", routing::get(get_order))
+        .route("/orders/:track_number", routing::get(get_order))
         .route("/orders", routing::post(create_order))
         .fallback(handler_404)
         .with_state(state)
@@ -49,11 +49,11 @@ async fn init_router() -> Router {
 }
 
 async fn init_tcp_listener() -> TcpListener {
-    let host = std::env::var("HOST").expect("Host don`t set");
-    let port = std::env::var("PORT").expect("Port don`t set");
+    let host = std::env::var("HOST").expect("Хост не установлен");
+    let port = std::env::var("PORT").expect("Порт не установлен");
     let addr = format!("{}:{}", host, port);
 
-    TcpListener::bind(addr).await.expect("the address is busy")
+    TcpListener::bind(addr).await.expect("Адрес занят")
 }
 
 #[tokio::main]
@@ -62,6 +62,12 @@ async fn main() {
 
     let router = init_router().await;
     let listener = init_tcp_listener().await;
+
+    env_logger::init();
+    log::info!(
+        "Сервер запущен на http://{}",
+        listener.local_addr().unwrap()
+    );
 
     axum::serve(listener, router).await.unwrap()
 }
