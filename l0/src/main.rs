@@ -41,9 +41,7 @@ async fn init_state() -> AppState {
     let client = init_db_connect().await;
     let cache = DashMap::new();
 
-    let state = AppState { client, cache };
-
-    state
+    AppState { client, cache }
 }
 
 /// Инициализация главного роутера

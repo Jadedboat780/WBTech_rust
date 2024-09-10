@@ -154,7 +154,7 @@ pub async fn insert_order(order: CreateOrder, client: &Client) -> PgResult<()> {
     let payment_id = insert_payment(order.payment, client).await?;
 
     for item in order.items {
-        let _item_id = insert_item(item, client).await?;
+        insert_item(item, client).await?;
     }
 
     let query = "
