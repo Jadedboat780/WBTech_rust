@@ -30,9 +30,9 @@ pub async fn get_order(
 ) -> ApiResult<Json<GetOrder>> {
     log::info!("Запрос на получение заказа с трек-номером: {}", track_number);
 
-    // if let Some(cached_order) = state.cache.get(&track_number) {
-    //     return Ok(Json(cached_order.value().clone()));
-    // }
+    if let Some(cached_order) = state.cache.get(&track_number) {
+        return Ok(Json(cached_order.value().clone()));
+    }
 
     let order = select_order_by_id(&track_number, state.client.client())
         .await
@@ -41,7 +41,7 @@ pub async fn get_order(
             ApiError::InternalServerError(err.to_string())
         })?;
 
-    // state.cache.insert(track_number, order.clone());
+    state.cache.insert(track_number, order.clone());
     Ok(Json(order))
 }
 

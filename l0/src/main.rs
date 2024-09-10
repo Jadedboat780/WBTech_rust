@@ -47,7 +47,7 @@ async fn init_router() -> Router {
     let state = Arc::new(init_state().await);
     let cors = init_cors().await;
 
-    // tokio::spawn(cache_cleanup_task(state.clone(), 600));
+    tokio::spawn(cache_cleanup_task(state.clone(), 600));
 
     log::info!("Настройка маршрутов");
     Router::new()
