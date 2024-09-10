@@ -19,6 +19,7 @@ pub async fn hello_word() -> Json<String> {
 
 /// Обработка ошибки 404
 pub async fn handler_404() -> ApiError {
+    log::warn!("Запрос на несуществующую страницу");
     ApiError::NotFound("Page not found".to_owned())
 }
 
@@ -27,9 +28,13 @@ pub async fn get_order(
     Path(track_number): Path<String>,
     State(state): State<Arc<AppState>>,
 ) -> ApiResult<Json<GetOrder>> {
+    log::info!("Запрос на получение заказа с трек-номером: {}", track_number);
     let order = select_order_by_id(track_number, state.client.client())
         .await
-        .map_err(|err| ApiError::InternalServerError(err.to_string()))?;
+        .map_err(|err| {
+            log::error!("Ошибка получения заказа: {}", err);
+            ApiError::InternalServerError(err.to_string())
+        })?;
 
     Ok(Json(order))
 }
@@ -39,9 +44,13 @@ pub async fn create_order(
     State(state): State<Arc<AppState>>,
     Json(order): Json<CreateOrder>,
 ) -> ApiResult<StatusCode> {
+    log::info!("Создание нового заказа с трек-номером: {}", order.track_number);
     insert_order(order, state.client.client())
         .await
-        .map_err(|err| ApiError::InternalServerError(err.to_string()))?;
+        .map_err(|err| {
+            log::error!("Ошибка создания заказа: {}", err);
+            ApiError::InternalServerError(err.to_string())
+        })?;
 
     Ok(StatusCode::CREATED)
 }

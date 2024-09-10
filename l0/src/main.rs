@@ -22,11 +22,13 @@ async fn init_db_connect() -> Client {
         }
     });
 
+    log::info!("Успешное подключение к базе данных");
     client
 }
 
 /// Инициализация CORS
 async fn init_cors() -> CorsLayer {
+    log::info!("Настройка CORS");
     CorsLayer::new()
         .allow_methods(Any)
         .allow_headers(Any)
@@ -39,6 +41,7 @@ async fn init_router() -> Router {
     let state = Arc::new(AppState { client });
     let cors = init_cors().await;
 
+    log::info!("Настройка маршрутов");
     Router::new()
         .route("/", routing::get(hello_word))
         .route("/orders/:track_number", routing::get(get_order))
@@ -48,22 +51,24 @@ async fn init_router() -> Router {
         .layer(cors)
 }
 
+/// Инициализация TCP слушателя
 async fn init_tcp_listener() -> TcpListener {
     let host = std::env::var("HOST").expect("Хост не установлен");
     let port = std::env::var("PORT").expect("Порт не установлен");
     let addr = format!("{}:{}", host, port);
 
+    log::info!("Запуск TCP слушателя на адресе: {}", addr);
     TcpListener::bind(addr).await.expect("Адрес занят")
 }
 
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
+    env_logger::init();
 
     let router = init_router().await;
     let listener = init_tcp_listener().await;
 
-    env_logger::init();
     log::info!(
         "Сервер запущен на http://{}",
         listener.local_addr().unwrap()
