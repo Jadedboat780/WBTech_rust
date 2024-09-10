@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  db:
+    container_name: db
+    image: postgres:alpine
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./migrations/20240902164357_init.up.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+
+  server:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+volumes:
+  db-data:

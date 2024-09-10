@@ -80,8 +80,8 @@ async fn main() {
     let listener = init_tcp_listener().await;
 
     log::info!(
-        "Сервер запущен на http://{}",
-        listener.local_addr().unwrap()
+        "Сервер запущен на http://localhost:{}/",
+        listener.local_addr().unwrap().port()
     );
 
     axum::serve(listener, router).await.unwrap()
