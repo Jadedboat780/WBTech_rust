@@ -4,11 +4,8 @@ use tokio_postgres::{Client, NoTls};
 use tower_http::cors::{Any, CorsLayer};
 
 use std::sync::Arc;
-
-use l0::{
-    endpoints::{create_order, get_order, handler_404, hello_word},
-    AppState,
-};
+use dashmap::DashMap;
+use l0::{cache_cleanup_task, endpoints::{create_order, get_order, handler_404, hello_word}, AppState};
 
 /// Инициализация подключения к базе данных
 async fn init_db_connect() -> Client {
@@ -35,11 +32,22 @@ async fn init_cors() -> CorsLayer {
         .allow_origin(Any)
 }
 
+/// Инициализация общего состояния приложения
+async fn init_state() -> AppState {
+    let client = init_db_connect().await;
+    let cache = DashMap::new();
+
+    let state = AppState { client, cache };
+
+    state
+}
+
 /// Инициализация главного роутера
 async fn init_router() -> Router {
-    let client = init_db_connect().await;
-    let state = Arc::new(AppState { client });
+    let state = Arc::new(init_state().await);
     let cors = init_cors().await;
+
+    // tokio::spawn(cache_cleanup_task(state.clone(), 600));
 
     log::info!("Настройка маршрутов");
     Router::new()

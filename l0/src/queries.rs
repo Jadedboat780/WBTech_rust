@@ -5,7 +5,7 @@ use tokio_postgres::Client;
 type PgResult<T> = Result<T, tokio_postgres::Error>;
 
 /// Получение данных о заказе из базы данных
-pub async fn select_order_by_id(track_number: String, client: &Client) -> PgResult<GetOrder> {
+pub async fn select_order_by_id(track_number: &String, client: &Client) -> PgResult<GetOrder> {
     let query = "
     SELECT O.order_uid,
     O.track_number,
@@ -55,7 +55,7 @@ pub async fn select_order_by_id(track_number: String, client: &Client) -> PgResu
         GROUP BY O.order_uid, D.id, P.id;
 ";
 
-    let row = client.query_one(query, &[&track_number]).await?;
+    let row = client.query_one(query, &[track_number]).await?;
 
     let order = GetOrder::from(row);
     Ok(order)

@@ -6,7 +6,7 @@ use axum::{
 use tokio_postgres::GenericClient;
 
 use std::sync::Arc;
-
+// use
 use crate::api_response::{ApiError, ApiResult};
 use crate::models::{CreateOrder, GetOrder};
 use crate::queries::{insert_order, select_order_by_id};
@@ -29,13 +29,19 @@ pub async fn get_order(
     State(state): State<Arc<AppState>>,
 ) -> ApiResult<Json<GetOrder>> {
     log::info!("Запрос на получение заказа с трек-номером: {}", track_number);
-    let order = select_order_by_id(track_number, state.client.client())
+
+    // if let Some(cached_order) = state.cache.get(&track_number) {
+    //     return Ok(Json(cached_order.value().clone()));
+    // }
+
+    let order = select_order_by_id(&track_number, state.client.client())
         .await
         .map_err(|err| {
             log::error!("Ошибка получения заказа: {}", err);
             ApiError::InternalServerError(err.to_string())
         })?;
 
+    // state.cache.insert(track_number, order.clone());
     Ok(Json(order))
 }
 

@@ -4,7 +4,7 @@ use serde_json::Value;
 use tokio_postgres::Row;
 
 /// Модель для получения данных о заказе
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 pub struct GetOrder {
     order_uid: uuid::Uuid,
     track_number: String,
