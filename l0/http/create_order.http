@@ -27,9 +27,8 @@ Content-Type: application/json
     },
     "items": [
         {
-            "id": 1,
-            "chrt_id": 1234567,
-            "track_number": "12345",
+            "chrt_id": 12345678,
+            "track_number": "WWWWWW",
             "price": 500,
             "rid": "rid_12345",
             "name": "Test Item 1",
@@ -41,17 +40,16 @@ Content-Type: application/json
             "status": 1
         },
         {
-            "id": 2,
-            "chrt_id": 654321,
-            "track_number": "12345",
+            "chrt_id": 1234,
+            "track_number": "WWWWWW",
             "price": 500,
-            "rid": "rid_54321",
-            "name": "Test Item 2",
-            "sale": 0,
-            "size": "M",
-            "total_price": 500,
-            "nm_id": 222222,
-            "brand": "AnotherBrand",
+            "rid": "rid_12345",
+            "name": "Test Item 1",
+            "sale": 10,
+            "size": "L",
+            "total_price": 450,
+            "nm_id": 111111,
+            "brand": "TestBrand",
             "status": 1
         }
     ],
