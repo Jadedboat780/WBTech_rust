@@ -24,7 +24,7 @@ impl<'a> Args<'a> {
             Some("-w") => Flags::W,
             Some(wrong_option) => {
                 eprintln!("Неизвестная опция: {}", wrong_option);
-                std::process::exit(1);  // Завершение программы с кодом ошибки
+                std::process::exit(1); // Завершение программы с кодом ошибки
             }
             None => Flags::W,
         };
@@ -75,8 +75,8 @@ impl<'a> Args<'a> {
 }
 
 // Для запуска используйте команду вида:
-// cargo run --example l2-task1 wc files/task1.txt
-// cargo run --example l2-task1 wc -l files/task1.txt
+// cargo run --example l2-task1 wc files/song.txt
+// cargo run --example l2-task1 wc -l files/song.txt
 fn main() {
     // считываем аргументы командной строки
     let args: Vec<String> = env::args().collect();
@@ -84,7 +84,7 @@ fn main() {
     // если аргументов командной строки недостаточно или они переданны не коректно, то программа завершается
     if args.len() < 3 || args[1] != "wc" {
         eprintln!("Используйте команду вида: wc [-c|-l|-w] <filename>");
-        std::process::exit(1);  // Завершение программы с кодом ошибки
+        std::process::exit(1); // Завершение программы с кодом ошибки
     }
 
     // сопоставление аргументов
