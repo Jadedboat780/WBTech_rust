@@ -17,8 +17,8 @@ struct TelnetArgs {
     port: u16,
 
     /// Таймаут подключения (по умолчанию 10 секунд)
-    #[clap(short = 't', long)]
-    timeout: Option<u64>,
+    #[clap(short = 't', long, default_value="10")]
+    timeout: u64,
 }
 
 /// Получение адреса
@@ -40,7 +40,7 @@ fn get_addr(host: String, port: u16) -> Option<SocketAddr> {
 async fn main() {
     let args = TelnetArgs::parse();
 
-    let timeout_duration = Duration::from_secs(args.timeout.unwrap_or(10));
+    let timeout_duration = Duration::from_secs(args.timeout);
     let addr = get_addr(args.host, args.port).expect("Неверный адрес");
     let token = CancellationToken::new();
 
