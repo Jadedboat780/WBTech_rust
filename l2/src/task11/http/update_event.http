@@ -1,0 +1,11 @@
+POST http://localhost:3000/update_event
+Content-Type: application/json
+
+{
+        "id": 0,
+        "title": "Updated Event 1",
+        "description": "Updated description of Event 1",
+        "date": "2024-10-12"
+}
+
+

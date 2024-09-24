@@ -3,32 +3,30 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
-use serde_json::json;
 
-pub type ApiResult<T> = Result<T, ApiError>;
+/// Результат запроса на API
+pub type ApiResponse<T> = Result<T, ApiError>;
 
 #[derive(Debug)]
 pub enum ApiError {
-    BadRequest,
-    Forbidden,
-    NotFound(String),
-    RequestTimeout,
+    /// Error 400
+    BadRequest(String),
+    /// Error 500
     InternalServerError(String),
-    // NotImplemented,
-    // ServiceUnavailable,
+    /// Error 503
+    ServiceUnavailable(String),
 }
 
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
-        let (status, error_message) = match self {
-            Self::BadRequest => (StatusCode::BAD_REQUEST, "Bad request".to_owned()),
-            Self::Forbidden => (StatusCode::FORBIDDEN, "Forbidden".to_owned()),
-            Self::NotFound(err) => (StatusCode::NOT_FOUND, err),
-            Self::RequestTimeout => (StatusCode::REQUEST_TIMEOUT, "Request timeout".to_owned()),
-            Self::InternalServerError(err) => (StatusCode::INTERNAL_SERVER_ERROR, err),
+        let (status, message) = match self {
+            ApiError::BadRequest(msg) => (StatusCode::BAD_REQUEST, msg),
+            ApiError::ServiceUnavailable(msg) => (StatusCode::SERVICE_UNAVAILABLE, msg),
+            ApiError::InternalServerError(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),
         };
 
-        let body = Json(json!({"error": error_message}));
+        let body = Json(serde_json::json!({ "error": message }));
+
         (status, body.to_owned()).into_response()
     }
 }

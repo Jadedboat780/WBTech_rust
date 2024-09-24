@@ -10,4 +10,9 @@ tokio = { version = "1", features = ["full"] }
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.114"
 
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
 dotenv = "0.15"
+chrono = {version = "0.4.38", features = ["serde"] }
+uuid = { version = "1.10.0", features = ["serde", "v4"] }

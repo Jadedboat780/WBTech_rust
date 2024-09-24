@@ -1,20 +1,25 @@
-use axum::{routing, Router};
+use axum::{middleware, routing, Router};
+use std::sync::Arc;
 use task11::endpoints::{
-    create_event, delete_event, events_for_day, events_for_month, events_for_week, handler_404,
-    update_event,
+    create_event, delete_event, events_for_day, events_for_month, events_for_week, update_event,
 };
+use task11::middleware::log_requests;
+use task11::EventState;
 use tokio::net::TcpListener;
 
 /// Инициализация главного роутера
 async fn init_router() -> Router {
+    let state = Arc::new(EventState::new());
+
     Router::new()
-        .route("/create_event ", routing::post(create_event))
-        .route("/update_event ", routing::post(update_event))
-        .route("/delete_event ", routing::post(delete_event))
+        .route("/create_event", routing::post(create_event))
+        .route("/update_event", routing::post(update_event))
+        .route("/delete_event/:id", routing::post(delete_event))
         .route("/events_for_day", routing::get(events_for_day))
-        .route("/week", routing::get(events_for_week))
-        .route("/month", routing::get(events_for_month))
-        .fallback(handler_404)
+        .route("/events_for_week", routing::get(events_for_week))
+        .route("/events_for_month", routing::get(events_for_month))
+        .with_state(state)
+        .layer(middleware::from_fn(log_requests))
 }
 
 /// Инициализация TCP слушателя
@@ -29,6 +34,7 @@ async fn init_tcp_listener() -> TcpListener {
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
+    tracing_subscriber::fmt::init();
 
     let router = init_router().await;
     let listener = init_tcp_listener().await;
