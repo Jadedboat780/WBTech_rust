@@ -55,7 +55,7 @@ impl Cli {
     fn execute(&self, command: &str) -> io::Result<()> {
         let mut parts = command.split_whitespace();
         let cmd = parts.next().unwrap_or("");
-        let args: Vec<&str> = parts.collect();
+        let args= &parts.collect::<Vec<&str>>();
 
         match cmd {
             "cd" => self.cd(args),
@@ -69,7 +69,7 @@ impl Cli {
     }
 
     /// Команда cd
-    fn cd(&self, args: Vec<&str>) -> io::Result<()> {
+    fn cd(&self, args: &[&str]) -> io::Result<()> {
         let dir = if args.is_empty() {
             env::var("HOME")
                 .map(PathBuf::from)
@@ -77,12 +77,13 @@ impl Cli {
         } else {
             PathBuf::from(args[0])
         };
+
         env::set_current_dir(dir)?;
         Ok(())
     }
 
     /// Команда ls
-    fn ls(&self, args: Vec<&str>) -> io::Result<()> {
+    fn ls(&self, args: &[&str]) -> io::Result<()> {
         let dir = if args.is_empty() { "." } else { args[0] };
         for entry in std::fs::read_dir(dir)? {
             let entry = entry?;
@@ -92,7 +93,7 @@ impl Cli {
     }
 
     /// Команда echo
-    fn echo(&self, args: Vec<&str>) -> io::Result<()> {
+    fn echo(&self, args: &[&str]) -> io::Result<()> {
         println!("{}", args.join(" "));
         Ok(())
     }
@@ -134,7 +135,8 @@ impl Cli {
                 .stdout(stdout)
                 .spawn()?;
 
-            prev_command_stdout = child.stdout.take(); // Получаем `ChildStdout`, который можно использовать в следующей итерации.
+            // Получаем ChildStdout, который можно использовать в следующей итерации.
+            prev_command_stdout = child.stdout.take();
         }
 
         // Если последняя команда имеет вывод, копируем его в стандартный поток вывода
