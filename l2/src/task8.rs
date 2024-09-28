@@ -5,7 +5,7 @@ use std::process::{self, Command, Stdio};
 
 fn main() {
     loop {
-        // Waiting input
+        // Ожидание ввода
         print!("shell> ");
         io::stdout().flush().unwrap();
 
@@ -13,12 +13,7 @@ fn main() {
         io::stdin().read_line(&mut input).unwrap();
         let input = input.trim();
 
-        // Exit from shell
-        if input == "\\quit" {
-            break;
-        }
-
-        // Team breakdown by pipes
+        // Распределение команд по каналам
         let commands = input
             .split('|')
             .map(|s| s.trim().to_string())
@@ -32,7 +27,7 @@ fn main() {
     }
 }
 
-// Processing commands with pipes
+/// Обработка команд с помощью pipes
 fn handle_pipes(commands: Vec<String>) {
     let mut prev_output = None;
 
@@ -62,7 +57,7 @@ fn handle_pipes(commands: Vec<String>) {
     }
 }
 
-// Processing command
+/// Обработка команд
 fn handle_command(input: String) {
     let parts: Vec<&str> = input.split_whitespace().collect();
     let command = parts[0];
@@ -74,11 +69,12 @@ fn handle_command(input: String) {
         "echo" => echo(args),
         "kill" => kill_process(args),
         "ps" => print_processes(),
+        "exit" => process::exit(0),
         _ => execute_external_command(command, args),
     }
 }
 
-/// Command cd
+/// Команда cd
 fn change_directory(args: &[&str]) {
     if args.is_empty() {
         eprintln!("cd: missing argument");
@@ -91,7 +87,7 @@ fn change_directory(args: &[&str]) {
     }
 }
 
-/// Command pwd
+/// Команда pwd
 fn print_working_directory() {
     match env::current_dir() {
         Ok(path) => println!("{}", path.display()),
@@ -99,24 +95,24 @@ fn print_working_directory() {
     }
 }
 
-/// Command echo
+/// Команда echo
 fn echo(args: &[&str]) {
     println!("{}", args.join(" "));
 }
 
-/// Command kill
+/// Команда kill
 fn kill_process(args: &[&str]) {
     if args.is_empty() {
         eprintln!("kill: missing argument");
         return;
     }
 
-    let pid: i32 = args[0].parse().unwrap_or_else(|_| {
+    let pid: u32 = args[0].parse().unwrap_or_else(|_| {
         eprintln!("kill: invalid pid");
         process::exit(1);
     });
 
-    match process::id().checked_sub(pid as u32) {
+    match process::id().checked_sub(pid) {
         Some(_) => {
             if let Err(err) = Command::new("kill").arg(pid.to_string()).status() {
                 eprintln!("kill: failed to kill process {}: {}", pid, err);
@@ -126,7 +122,7 @@ fn kill_process(args: &[&str]) {
     }
 }
 
-/// Command ps
+/// Команда ps
 fn print_processes() {
     let output = Command::new("ps")
         .arg("-eo")
@@ -141,7 +137,7 @@ fn print_processes() {
     }
 }
 
-/// Executing external commands from via/forkexec
+/// Выполнение внешних команд из via/forkexec
 fn execute_external_command(command: &str, args: &[&str]) {
     match Command::new(command).args(args).status() {
         Ok(status) => {
