@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 axum = { version = "0.7", features = ["macros"] }
+tower = { version = "0.5.1", features = ["timeout"] }
 tokio = { version = "1", features = ["full"] }
 
 serde = { version = "1.0.197", features = ["derive"] }

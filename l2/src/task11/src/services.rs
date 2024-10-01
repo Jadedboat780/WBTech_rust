@@ -33,12 +33,9 @@ pub fn update_event(event: EventUpdateRequest, events_state: Arc<EventState>) ->
 }
 
 pub fn delete_event(id: u32, events_state: Arc<EventState>) -> Result<(), ()> {
-    events_state
-        .delete(id)
-        .map_err(|_| ())?;
+    events_state.delete(id).map_err(|_| ())?;
     Ok(())
 }
-
 
 pub fn events_for_day(
     user_id: u32,
@@ -78,11 +75,7 @@ pub fn events_for_month(
     date: NaiveDate,
     events_state: Arc<EventState>,
 ) -> Option<Vec<Event>> {
-    let start_of_month = date
-        .with_day(1)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap();
+    let start_of_month = date.with_day(1).unwrap().and_hms_opt(0, 0, 0).unwrap();
 
     let last_day_of_month = date
         .with_day(1)

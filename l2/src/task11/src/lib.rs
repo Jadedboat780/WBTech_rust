@@ -49,7 +49,11 @@ impl EventState {
     pub fn filter(&self, user_id: u32, start: NaiveDateTime, end: NaiveDateTime) -> Vec<Event> {
         self.get()
             .iter()
-            .filter(|e| e.user_id == user_id && e.date.and_hms_opt(0, 0, 0).unwrap() >= start && e.date.and_hms_opt(23, 59, 59).unwrap() <= end)
+            .filter(|e| {
+                e.user_id == user_id
+                    && e.date.and_hms_opt(0, 0, 0).unwrap() >= start
+                    && e.date.and_hms_opt(23, 59, 59).unwrap() <= end
+            })
             .cloned()
             .collect()
     }
