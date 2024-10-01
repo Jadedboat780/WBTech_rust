@@ -1,15 +1,24 @@
-use axum::{middleware, routing, Router};
+use axum::error_handling::HandleErrorLayer;
+use axum::{middleware, routing, BoxError, Router};
 use std::sync::Arc;
-use task11::endpoints::{
-    create_event, delete_event, events_for_day, events_for_month, events_for_week, update_event,
+use task11::api_response::handle_timeout_error;
+use task11::{
+    endpoints::{
+        create_event, delete_event, events_for_day, events_for_month, events_for_week, update_event,
+    },
+    middleware::log_requests,
+    EventState,
 };
-use task11::middleware::log_requests;
-use task11::EventState;
-use tokio::net::TcpListener;
+use tokio::{net::TcpListener, time::Duration};
+use tower::timeout::TimeoutLayer;
+use tower::ServiceBuilder;
 
 /// Инициализация главного роутера
 async fn init_router() -> Router {
     let state = Arc::new(EventState::new());
+    let service = ServiceBuilder::new()
+        .layer(HandleErrorLayer::new(handle_timeout_error))
+        .layer(TimeoutLayer::new(Duration::from_secs(30)));
 
     Router::new()
         .route("/create_event", routing::post(create_event))
@@ -20,6 +29,7 @@ async fn init_router() -> Router {
         .route("/events_for_month", routing::get(events_for_month))
         .with_state(state)
         .layer(middleware::from_fn(log_requests))
+        .layer(service)
 }
 
 /// Инициализация TCP слушателя
