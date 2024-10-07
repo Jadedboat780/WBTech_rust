@@ -1,0 +1,19 @@
+[package]
+name = "task-manager"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = {version =  "0.7.7", features = ["macros"] }
+tower = "0.5.1"
+tower-http = "0.6.1"
+tokio = { version = "1", features = ["full"] }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1.0"
+
+sqlx = { version = "0.8.2", features = ["runtime-tokio-rustls", "postgres"] }
+tokio-stream = "0.1"
+redis = { version = "0.27.2", features = ["aio", "tokio-comp"] }
+
+dotenv = "0.15"
