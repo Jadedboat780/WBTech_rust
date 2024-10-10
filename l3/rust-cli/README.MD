@@ -13,3 +13,14 @@
 ```shell
 cargo run 
 ```
+
+## Примеры использования
+```shell
+ls -l 
+cd src
+pwd 
+echo "Hello, World!" | tr '[:lower:]' '[:upper:]'
+history
+cd .
+exit
+```
