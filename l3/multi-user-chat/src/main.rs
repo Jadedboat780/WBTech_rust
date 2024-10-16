@@ -1,17 +1,18 @@
 use axum::{routing, Router};
-use tokio::net::TcpListener;
-use std::sync::Arc;
 use multi_user_chat::{
-    handlers::{join_room, leave_room, send_message, get_messages},
+    handlers::{create_room, create_user, get_messages, join_room, leave_room, send_message},
     AppState,
 };
-
+use std::sync::Arc;
+use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() {
-    let state = Arc::new(AppState::new());
+    let state = Arc::new(AppState::default());
 
     let router = Router::new()
+        .route("/create_user/:room_name", routing::get(create_user))
+        .route("/create_room/:room_name", routing::get(create_room))
         .route("/join", routing::post(join_room))
         .route("/leave/:room_id/:user_id", routing::post(leave_room))
         .route("/send", routing::post(send_message))

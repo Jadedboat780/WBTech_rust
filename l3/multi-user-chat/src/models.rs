@@ -1,32 +1,79 @@
+use crate::{RoomName, UserId};
 use serde::{Deserialize, Serialize};
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
 
+/// Пользователь
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User {
     pub name: String,
 }
 
+/// Сообщение
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Message {
-    pub content: String
+    pub user_id: UserId,
+    pub content: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+/// Комната
+#[derive(Debug, Clone, Default)]
 pub struct Room {
-    pub name: String,
     pub messages: Vec<Message>,
-    pub users: Vec<User>
+    users: Vec<UserId>,
+    users_count: Arc<AtomicUsize>,
 }
 
 #[derive(Deserialize)]
 pub struct JoinRoom {
-    pub room: Room,
-    pub user: User,
+    pub room_name: RoomName,
+    pub user_id: UserId,
+}
+
+#[derive(Deserialize)]
+pub struct LeaveRoom {
+    pub room_name: RoomName,
+    pub user_id: UserId,
 }
 
 #[derive(Deserialize)]
 pub struct SendMessage {
-    pub room_name: String,
-    pub username: String,
+    pub room_name: RoomName,
     pub message: Message,
 }
 
+impl User {
+    pub fn new(name: String) -> Self {
+        Self { name }
+    }
+}
+impl Room {
+    pub fn new() -> Self {
+        Self {
+            ..Default::default()
+        }
+    }
+
+    /// Добавление юзера в комнату
+    pub fn add_user(&mut self, id: u32) {
+        // Добавление id пользователя в список
+        self.users.push(id);
+        // Увеличение счётчика юзеров
+        self.users_count.fetch_add(1, Ordering::Release);
+    }
+
+    /// Удаление юзера из комнаты
+    pub fn remove_user(&mut self, id: UserId) {
+        if let Some(pos) = self.users.iter().position(|&user_id| user_id == id) {
+            // Удаление id пользователя из списка
+            self.users.remove(pos);
+            // Уменьшение счётчика юзеров
+            self.users_count.fetch_sub(1, Ordering::Release);
+        }
+    }
+
+    /// Получение количества юзеров в комнате
+    pub fn users_count(&self) -> usize {
+        self.users_count.load(Ordering::Relaxed)
+    }
+}
