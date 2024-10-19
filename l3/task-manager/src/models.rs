@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use sqlx::{PgPool, postgres::PgQueryResult};
+use sqlx::{postgres::PgQueryResult, PgPool};
 
 pub type PgResult<T> = Result<T, sqlx::Error>;
 
@@ -31,7 +31,7 @@ impl Task {
             .await
     }
 
-    pub async fn complete(pool: &PgPool, id: i32) ->PgResult<PgQueryResult> {
+    pub async fn complete(pool: &PgPool, id: i32) -> PgResult<PgQueryResult> {
         sqlx::query("UPDATE tasks SET completed = $1 WHERE id = $2")
             .bind(true)
             .bind(id)

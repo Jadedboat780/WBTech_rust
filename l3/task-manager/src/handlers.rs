@@ -3,12 +3,12 @@ use crate::notifications::{notify_users, TaskNotify};
 use crate::AppState;
 use axum::{
     extract::{Path, State},
+    http::StatusCode,
     Json,
 };
+use redis::AsyncCommands;
 use serde_json::{json, Value};
 use std::sync::Arc;
-use axum::http::StatusCode;
-use redis::AsyncCommands;
 
 type ApiResponse<T> = Result<T, StatusCode>;
 
