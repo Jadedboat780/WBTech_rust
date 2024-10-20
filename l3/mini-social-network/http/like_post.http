@@ -1,0 +1,3 @@
+# Перед запуском вставте id поста и токен
+POST http://localhost:3000/posts/:id/likes
+Authorization: Bearer :token

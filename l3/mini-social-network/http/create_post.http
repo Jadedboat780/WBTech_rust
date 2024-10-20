@@ -1,0 +1,12 @@
+# Перед запуском вставте токен
+POST http://localhost:3000/posts
+Authorization: Bearer :token
+Content-Type: application/json
+
+{
+"login_user": {
+        "name": "new_user",
+        "password": "secret"
+    },
+"content": "This is my first post!"
+}

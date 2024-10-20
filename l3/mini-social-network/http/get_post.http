@@ -1,0 +1,3 @@
+# Перед запуском вставте id поста и токен
+GET http://localhost:3000/posts/:id
+Authorization: Bearer :token
