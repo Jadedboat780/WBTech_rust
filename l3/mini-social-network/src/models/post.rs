@@ -20,8 +20,7 @@ pub struct CreatePost {
 
 impl Post {
     pub async fn new(client: &Client, user_id: Uuid, content: String) -> PgResult<Uuid> {
-        let query =
-            "INSERT INTO posts (user_id, content, likes) VALUES ($1, $2, $3, $4) RETURNING id";
+        let query = "INSERT INTO posts (user_id, content, likes) VALUES ($1, $2, $3) RETURNING id";
         let row = client.query_one(query, &[&user_id, &content, &0]).await?;
 
         let id: Uuid = row.try_get("id")?;

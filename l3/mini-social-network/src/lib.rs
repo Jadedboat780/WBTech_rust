@@ -3,9 +3,10 @@ pub mod auth;
 pub mod handlers;
 pub mod models;
 
+use auth::{login, register};
 use axum::{routing, Router};
 use deadpool_postgres::{Config, Pool, Runtime::Tokio1};
-use handlers::{create_post, delete_post, get_post, like_post, login_user, register_user};
+use handlers::posts::{create_post, delete_post, get_post, like_post};
 use std::sync::Arc;
 use tokio::net::TcpListener;
 
@@ -30,15 +31,18 @@ fn init_db_connect() -> Pool {
     config.port = std::env::var("DB_PORT").unwrap().parse::<u16>().ok();
     config.dbname = std::env::var("DB_NAME").ok();
 
-    config.create_pool(Some(Tokio1), tokio_postgres::NoTls).unwrap()
+    config
+        .create_pool(Some(Tokio1), tokio_postgres::NoTls)
+        .unwrap()
 }
 
+/// Инициализация роутера
 pub async fn init_router() -> Router {
     let pool = init_db_connect();
     let state = Arc::new(AppState { pool });
     Router::new()
-        .route("/register", routing::post(register_user))
-        .route("/login", routing::post(login_user))
+        .route("/register", routing::post(register))
+        .route("/login", routing::post(login))
         .route("/posts", routing::post(create_post))
         .route(
             "/posts/:post_id",

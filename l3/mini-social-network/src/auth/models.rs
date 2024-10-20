@@ -20,12 +20,11 @@ impl<S: Send + Sync> FromRequestParts<S> for Claims {
     type Rejection = AuthError;
 
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        // Extract the token from the authorization header
         let TypedHeader(Authorization(bearer)) = parts
             .extract::<TypedHeader<Authorization<Bearer>>>()
             .await
             .map_err(|_| AuthError::InvalidToken)?;
-        // Decode the user data
+
         let token_data = decode::<Claims>(bearer.token(), &KEYS.decoding, &Validation::default())
             .map_err(|_| AuthError::InvalidToken)?;
 
@@ -34,22 +33,24 @@ impl<S: Send + Sync> FromRequestParts<S> for Claims {
 }
 
 #[derive(Debug, Serialize)]
-pub struct AuthBody {
+pub(crate) struct AuthBody {
     access_token: String,
     token_type: String,
+    user_id: Uuid,
 }
 
 impl AuthBody {
-    pub fn new(access_token: String) -> Self {
+    pub fn new(access_token: String, user_id: Uuid) -> Self {
         Self {
             access_token,
             token_type: "Bearer".into(),
+            user_id,
         }
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub struct AuthPayload {
-    pub client_id: String,
-    pub client_secret: String,
+#[derive(Deserialize)]
+pub(crate) struct AuthPayload {
+    pub username: String,
+    pub password: String,
 }
