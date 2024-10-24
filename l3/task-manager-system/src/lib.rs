@@ -4,7 +4,7 @@ use std::process::Command;
 use std::sync::{atomic::{AtomicBool, Ordering}, Arc, Mutex};
 use std::thread;
 
-/// Тип сообщения для управления задачами
+/// Тип команды для менеджера задач
 #[derive(Debug)]
 pub enum TaskManage {
     Start(String),
@@ -82,6 +82,7 @@ impl TaskManager {
             });
     }
 
+    /// Статус менеджера задач
     pub fn status(&self) {
         let tasks = self.tasks.lock().unwrap();
         log::info!("Currently running tasks: {}", tasks.len());
