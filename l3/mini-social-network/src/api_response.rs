@@ -4,6 +4,7 @@ use axum::{
     Json,
 };
 use serde_json::json;
+use tower::{timeout, BoxError};
 
 pub type ApiResult<T> = Result<T, ApiError>;
 
@@ -33,5 +34,13 @@ impl IntoResponse for ApiError {
 
         let body = Json(json!({"error": error_message}));
         (status, body.to_owned()).into_response()
+    }
+}
+
+pub async fn handle_timeout_error(err: BoxError) -> ApiError {
+    if err.is::<timeout::error::Elapsed>() {
+        ApiError::RequestTimeout
+    } else {
+        ApiError::InternalServerError(err.to_string())
     }
 }

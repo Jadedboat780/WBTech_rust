@@ -26,10 +26,7 @@ pub struct LoginUser {
 impl User {
     pub async fn new(client: &Client, username: String, password: String) -> PgResult<Uuid> {
         let query = "INSERT INTO users (name, password) VALUES ($1, $2) RETURNING id";
-        let row = client
-            .query_one(query, &[&username, &password])
-            .await
-            .unwrap();
+        let row = client.query_one(query, &[&username, &password]).await?;
 
         let id: Uuid = row.try_get("id")?;
         Ok(id)
@@ -37,10 +34,7 @@ impl User {
 
     pub async fn get(client: &Client, username: String, password: String) -> PgResult<Uuid> {
         let query = "SELECT id FROM Users WHERE name = $1 AND password = $2";
-        let row = client
-            .query_one(query, &[&username, &password])
-            .await
-            .unwrap();
+        let row = client.query_one(query, &[&username, &password]).await?;
 
         let id: Uuid = row.try_get("id")?;
         Ok(id)

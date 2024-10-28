@@ -1,5 +1,5 @@
 use jsonwebtoken::{DecodingKey, EncodingKey};
-use once_cell::sync::Lazy;
+use std::sync::LazyLock;
 
 pub struct Keys {
     pub encoding: EncodingKey,
@@ -15,7 +15,7 @@ impl Keys {
     }
 }
 
-pub static KEYS: Lazy<Keys> = Lazy::new(|| {
+pub static KEYS: LazyLock<Keys> = LazyLock::new(|| {
     let secret = std::env::var("JWT_SECRET").unwrap();
     Keys::new(secret.as_bytes())
 });
