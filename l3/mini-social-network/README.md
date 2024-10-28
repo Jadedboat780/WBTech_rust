@@ -24,5 +24,5 @@
 
 ## Для запуска проекта выполните:
 ```shell
-cargo run 
+cargo run --release
 ```
