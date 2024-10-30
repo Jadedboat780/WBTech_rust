@@ -1,6 +1,5 @@
 version: '3.9'
 
-
 services:
   web:
     build:
@@ -13,19 +12,23 @@ services:
 
   db:
     container_name: db
-    image: postgres
+    image: postgres:17
+    restart: always
+    ports:
+      - "8082:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./migrations/20241005165245_init.up.sql:/docker-entrypoint-initdb.d/init.sql
-    env_file:
-      - .env
-    ports:
-      - "5444:5444"
+    environment:
+      POSTGRES_USER: tokin_nikita
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: test_db
 
   redis:
-    image: redis:latest
+    image: redis:alpine
     ports:
-      - '6379:6379'
+      - '6370:6379'
 
 volumes:
   db-data:
+    driver: local
