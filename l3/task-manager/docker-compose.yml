@@ -12,17 +12,15 @@ services:
 
   db:
     container_name: db
-    image: postgres:17
+    image: postgres:17-alpine
     restart: always
     ports:
-      - "8082:5432"
+      - "5433:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./migrations/20241005165245_init.up.sql:/docker-entrypoint-initdb.d/init.sql
-    environment:
-      POSTGRES_USER: tokin_nikita
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: test_db
+    env_file:
+      - .env
 
   redis:
     image: redis:alpine

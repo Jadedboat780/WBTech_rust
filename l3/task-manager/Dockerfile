@@ -1,14 +1,12 @@
-FROM rust:1.80-slim AS builder
-RUN apt-get update && \
-  apt-get install -y pkg-config make g++ libssl-dev cmake libmariadb-dev-compat zlib1g && \
-  rustup target add x86_64-unknown-linux-gnu
-WORKDIR /app
+FROM rust:1.81-slim AS builder
+RUN apt-get update && apt-get install musl-tools -y && rustup target add x86_64-unknown-linux-musl
+WORKDIR /usr/src/app
 COPY . .
-RUN cargo build --release
+RUN cargo fetch
+RUN cargo build --release --target=x86_64-unknown-linux-musl
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt install -y openssl
-WORKDIR /app
-COPY --from=builder /app/target/release/task-manager /app/task-manager
-COPY --from=builder /app/.env /app/.env
-CMD ["./task-manager"]
+COPY --from=builder /usr/src/app/target/x86_64-unknown-linux-musl/release/task-manager /usr/local/bin/task-manager
+COPY .env ./
+EXPOSE 3000
+CMD ["task-manager"]
